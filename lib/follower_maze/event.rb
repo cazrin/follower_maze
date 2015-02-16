@@ -8,6 +8,8 @@ module FollowerMaze
       "U" => "UnfollowEvent"
     }
 
+    attr_reader :id
+
     def self.create_from_payload(payload)
       id, type, from, to = payload.split("|")
 
@@ -26,22 +28,21 @@ module FollowerMaze
   end
 
   class BroadcastEvent < Event
-    attr_reader :id
   end
 
   class FollowEvent < Event
-    attr_reader :id, :from, :to
+    attr_reader :from, :to
   end
 
   class PrivateMessageEvent < Event
-    attr_reader :id, :from, :to
+    attr_reader :from, :to
   end
 
   class StatusUpdateEvent < Event
-    attr_reader :id, :from
+    attr_reader :from
   end
 
   class UnfollowEvent < Event
-    attr_reader :id, :from, :to
+    attr_reader :from, :to
   end
 end
