@@ -25,6 +25,21 @@ RSpec.describe FollowerMaze::User do
     end
   end
 
+  describe "#notify" do
+    context "when the connection exists" do
+      let(:connection) { double(puts: true) }
+
+      before do
+        subject.connection = connection
+      end
+
+      it "sends the connection the payload" do
+        expect(connection).to receive(:puts).with("payload")
+        subject.notify("payload")
+      end
+    end
+  end
+
   describe "#remove_follower" do
     it "removes the User ID from the array of followers" do
       subject.add_follower(123)

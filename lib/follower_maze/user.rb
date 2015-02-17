@@ -2,20 +2,20 @@ class FollowerMaze::User
   attr_accessor :id, :connection, :followers
 
   def initialize(id:, connection: nil)
-    self.id = id
-    self.connection = connection
-    self.followers = []
+    @id = id
+    @connection = connection
+    @followers = []
   end
 
   def add_follower(id)
-    self.followers << id
+    @followers << id
   end
 
   def notify(payload)
-    self.connection.puts payload unless self.connection.nil?
+    @connection.puts payload unless @connection.nil?
   end
 
   def remove_follower(id)
-    self.followers = self.followers.reject { |follower_id| follower_id == id }
+    @followers = @followers.reject { |follower_id| follower_id == id }
   end
 end
