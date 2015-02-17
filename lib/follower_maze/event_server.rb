@@ -3,6 +3,7 @@ require "socket"
 class FollowerMaze::EventServer
   def initialize(port)
     @port = port
+    @pool = FollowerMaze::EventPool.new
   end
 
   def start
@@ -11,7 +12,8 @@ class FollowerMaze::EventServer
     socket = server.accept
 
     while line = socket.gets do
-      p "Event: #{line}"
+      event = FollowerMaze::Event.create_from_payload(line.strip)
+      @pool.add(event)
     end
 
     server.close

@@ -24,4 +24,13 @@ RSpec.describe FollowerMaze::User do
       expect(subject.followers).to eq([123])
     end
   end
+
+  describe "#remove_follower" do
+    it "removes the User ID from the array of followers" do
+      subject.add_follower(123)
+      subject.add_follower(456)
+      subject.remove_follower(123)
+      expect(subject.followers).to eq([456])
+    end
+  end
 end

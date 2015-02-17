@@ -9,8 +9,8 @@ class FollowerMaze::UserServer
     server = TCPServer.new("127.0.0.1", @port)
 
     while socket = server.accept do
-      user_id = socket.gets.strip
-      FollowerMaze::UserPool.add(user_id)
+      user_id = socket.gets.strip.to_i
+      FollowerMaze::UserPool.update_or_create(user_id, socket)
     end
 
     server.close
