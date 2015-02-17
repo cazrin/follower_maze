@@ -1,28 +1,24 @@
 class FollowerMaze::UserPool
-  @@users = []
+  @@users = {}
 
   class << self
     def connected_users
-      @@users.reject { |user| user.connection.nil? }
+      @@users.map(&:last).select(&:connected?)
     end
 
     def find(id)
-      user = @@users.find { |user| user.id == id }
-      user = update_or_create(id) if user.nil?
-      user
+      @@users[id] || update_or_create(id)
     end
 
     def update_or_create(id, connection=nil)
-      user = @@users.find { |user| user.id == id }
-
-      if user.nil?
+      if @@users[id].nil?
         user = FollowerMaze::User.new(id: id, connection: connection)
-        @@users << user
+        @@users[id] = user
       else
-        user.connection = connection unless connection.nil?
+        @@users[id].connection = connection unless connection.nil?
       end
 
-      user
+      @@users[id]
     end
 
     def users

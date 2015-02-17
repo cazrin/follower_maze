@@ -5,7 +5,7 @@ RSpec.describe FollowerMaze::UserPool do
   subject { described_class }
 
   after :each do
-    described_class.users = []
+    described_class.users = {}
   end
 
   describe ".connected_users" do
@@ -24,7 +24,7 @@ RSpec.describe FollowerMaze::UserPool do
       let(:user) { FollowerMaze::User.new(id: 123) }
 
       before do
-        subject.users = [user]
+        subject.users = { 123 => user }
       end
 
       it "returns the User" do
@@ -33,8 +33,8 @@ RSpec.describe FollowerMaze::UserPool do
     end
 
     context "when a User with the ID does not exist" do
-      it "returns nil" do
-        expect(subject.find(456)).to be_nil
+      it "creates the User" do
+        expect(subject.find(456)).to eq(subject.users[456])
       end
     end
   end
@@ -49,7 +49,7 @@ RSpec.describe FollowerMaze::UserPool do
         subject.update_or_create(1, "socket")
         expect(subject.users.count).to eq(1)
 
-        user = subject.users.first
+        user = subject.users[1]
         expect(user.id).to eq(1)
         expect(user.connection).to eq("socket")
       end
@@ -60,17 +60,10 @@ RSpec.describe FollowerMaze::UserPool do
         subject.update_or_create(1, "socket")
         expect(subject.users.count).to eq(1)
 
-        user = subject.users.first
+        user = subject.users[1]
         expect(user.id).to eq(1)
         expect(user.connection).to eq("socket")
       end
-    end
-  end
-
-  describe ".users" do
-    it "returns the array of users in the pool" do
-      subject.users = [1,2,3]
-      expect(subject.users).to eq([1,2,3])
     end
   end
 end
