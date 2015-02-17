@@ -4,6 +4,24 @@ require "follower_maze/user"
 RSpec.describe FollowerMaze::User do
   subject { described_class.new(id: 1, connection: "socket") }
 
+  describe "#connected?" do
+    context "when connection has a value" do
+      it "returns true" do
+        expect(subject).to be_connected
+      end
+    end
+
+    context "when connection is nil" do
+      before do
+        subject.connection = nil
+      end
+
+      it "returns false" do
+        expect(subject).not_to be_connected
+      end
+    end
+  end
+
   describe "#initialize" do
     it "sets the provided ID" do
       expect(subject.id).to eq(1)

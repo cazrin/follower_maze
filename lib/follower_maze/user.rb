@@ -11,6 +11,10 @@ class FollowerMaze::User
     @followers << id
   end
 
+  def connected?
+    !@connection.nil?
+  end
+
   def notify(payload)
     @connection.puts payload unless @connection.nil?
   end
