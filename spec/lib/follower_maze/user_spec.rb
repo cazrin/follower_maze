@@ -1,5 +1,4 @@
 require "spec_helper"
-require "follower_maze/user"
 
 RSpec.describe FollowerMaze::User do
   subject { described_class.new(id: 1, connection: "socket") }

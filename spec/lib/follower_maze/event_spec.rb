@@ -1,5 +1,4 @@
 require "spec_helper"
-require "follower_maze/event"
 
 RSpec.describe FollowerMaze::Event do
   describe ".create_from_payload" do

@@ -1,5 +1,4 @@
 require "spec_helper"
-require "follower_maze/user_pool"
 
 RSpec.describe FollowerMaze::UserPool do
   subject { described_class }
