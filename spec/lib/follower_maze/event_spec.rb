@@ -64,3 +64,101 @@ RSpec.describe FollowerMaze::Event do
     end
   end
 end
+
+RSpec.describe FollowerMaze::BroadcastEvent do
+  describe "#process" do
+    subject { described_class.new(payload: payload) }
+
+    let(:connected_user) { FollowerMaze::UserPool.update_or_create(1, "connection") }
+    let(:connected_user2) { FollowerMaze::UserPool.update_or_create(2, "connection") }
+    let(:disconnected_user) { FollowerMaze::UserPool.update_or_create(1) }
+    let(:payload) { "542532|B" }
+
+    it "notifies the connected users with the payload" do
+      expect(connected_user).to receive(:notify).with(payload)
+      expect(connected_user2).to receive(:notify).with(payload)
+      expect(disconnected_user).not_to receive(:notify).with(payload)
+
+      subject.process
+    end
+  end
+end
+
+RSpec.describe FollowerMaze::FollowEvent do
+  describe "#process" do
+    subject { described_class.new(payload: payload, from: "60", to: "50") }
+
+    let(:payload) { "666|F|60|50" }
+    let(:from) { FollowerMaze::UserPool.update_or_create(60) }
+    let(:to) { FollowerMaze::UserPool.update_or_create(50) }
+
+    it "adds the 'from' User as a follower of the 'to' User" do
+      subject.process
+      expect(to.followers).to eq([60])
+    end
+
+    it "notifies the 'to' User with the payload" do
+      expect(to).to receive(:notify).with(payload)
+      subject.process
+    end
+  end
+end
+
+RSpec.describe FollowerMaze::PrivateMessageEvent do
+  describe "#process" do
+    subject { described_class.new(payload: payload, from: "32", to: "56") }
+
+    let(:payload) { "43|P|32|56" }
+    let(:to) { FollowerMaze::UserPool.update_or_create(56) }
+
+    it "notifies the 'to' User with the payload" do
+      expect(to).to receive(:notify).with(payload)
+      subject.process
+    end
+  end
+end
+
+RSpec.describe FollowerMaze::StatusUpdateEvent do
+  describe "#process" do
+    subject { described_class.new(payload: payload, from: "32") }
+
+    let(:payload) { "634|S|32" }
+    let(:follower) { FollowerMaze::User.new(id: 1) }
+    let(:follower2) { FollowerMaze::User.new(id: 2) }
+    let(:from) { FollowerMaze::User.new(id: 32) }
+
+    before do
+      from.add_follower(follower.id)
+      from.add_follower(follower2.id)
+
+      FollowerMaze::UserPool.users[32] = from
+      FollowerMaze::UserPool.users[1] = follower
+      FollowerMaze::UserPool.users[2] = follower2
+    end
+
+    it "notifies each of the 'from' User's followers with the payload" do
+      expect(follower).to receive(:notify).with(payload)
+      expect(follower2).to receive(:notify).with(payload)
+
+      subject.process
+    end
+  end
+end
+
+RSpec.describe FollowerMaze::UnfollowEvent do
+  describe "#process" do
+    subject { described_class.new(from: "12", to: "9") }
+
+    let(:to) { FollowerMaze::User.new(id: 9) }
+
+    before do
+      to.add_follower(12)
+      FollowerMaze::UserPool.users = {9 => to}
+    end
+
+    it "removes the 'from' User as a follower of the 'to' User" do
+      subject.process
+      expect(to.followers).to eq([])
+    end
+  end
+end
