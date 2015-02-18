@@ -11,6 +11,7 @@ RSpec.describe FollowerMaze::Event do
 
       it "creates a FollowEvent" do
         expect(event).to be_a(FollowerMaze::FollowEvent)
+        expect(event.payload).to eq(payload)
         expect(event.id).to eq(666)
         expect(event.from).to eq(60)
         expect(event.to).to eq(50)
@@ -22,6 +23,7 @@ RSpec.describe FollowerMaze::Event do
 
       it "creates an UnfollowEvent" do
         expect(event).to be_a(FollowerMaze::UnfollowEvent)
+        expect(event.payload).to eq(payload)
         expect(event.id).to eq(1)
         expect(event.from).to eq(12)
         expect(event.to).to eq(9)
@@ -33,6 +35,7 @@ RSpec.describe FollowerMaze::Event do
 
       it "creates an BroadcastEvent" do
         expect(event).to be_a(FollowerMaze::BroadcastEvent)
+        expect(event.payload).to eq(payload)
         expect(event.id).to eq(542532)
       end
     end
@@ -42,6 +45,7 @@ RSpec.describe FollowerMaze::Event do
 
       it "creates an PrivateMessageEvent" do
         expect(event).to be_a(FollowerMaze::PrivateMessageEvent)
+        expect(event.payload).to eq(payload)
         expect(event.id).to eq(43)
         expect(event.from).to eq(32)
         expect(event.to).to eq(56)
@@ -53,6 +57,7 @@ RSpec.describe FollowerMaze::Event do
 
       it "creates an StatusUpdateEvent" do
         expect(event).to be_a(FollowerMaze::StatusUpdateEvent)
+        expect(event.payload).to eq(payload)
         expect(event.id).to eq(634)
         expect(event.from).to eq(32)
       end
